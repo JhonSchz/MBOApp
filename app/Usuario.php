@@ -16,8 +16,11 @@ class Usuario extends Model
 		'email_usuario',
 		'contrasena_usuario',
 		'telefono_usuario',
-		'estatus_usuario'
+		'estatus_usuario',
+		'fecha_alta_usuario'
 	];
+	
+	public $timestamps = false;
 	
 	protected $hidden = [
         'contrasena_usuario',

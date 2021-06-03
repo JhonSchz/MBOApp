@@ -5,10 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Averia;
 use App\Empresa;
-use Carbon\Carbon;
 
 class AveriaController extends Controller
 {
+	/**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+	
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +25,7 @@ class AveriaController extends Controller
      */
     public function index()
     {
-        $averias = Averia::whereNull('fecha_baja_averia')->get();
+        $averias = Averia::whereNull('fecha_baja_averia')->with('empresa')->get();
 		return view("averia.index", compact('averias'));
     	
 	}
@@ -40,8 +49,18 @@ class AveriaController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request = request()->except('_token','_method');
+		Averia::create([
+            'id_empresa' => $request['id_empresa'],
+            'estatus_averia' => $request['estatus_averia'],
+			'descripcion_averia' => $request['descripcion_averia'],
+			'fecha_alta_averia' => date("Y/m/d"),
+		]);
+		
+        $averias = Averia::whereNull('fecha_baja_averia')->with('empresa')->get();
+        return redirect()->route('averia.index', compact('averias'))
+			->with('status','La averia se ha creado con éxito');
+	}
 
     /**
      * Display the specified resource.
@@ -62,8 +81,9 @@ class AveriaController extends Controller
      */
     public function edit($id)
     {
-		$averia=Averia::find($id);
-        return view('averia.create', compact('averia'));
+        $empresas = Empresa::whereNull('fecha_baja_empresa')->get();
+		$averia = Averia::find($id)->first();
+        return view('averia.edit', compact('averia'), compact('empresas'));
     }
 
     /**
@@ -75,7 +95,18 @@ class AveriaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request = request()->except('_token','_method');
+
+		Averia::where('id_averia', $id)->update([
+			'id_empresa' => $request['id_empresa'],
+			'descripcion_averia' => $request['descripcion_averia'],
+			'estatus_averia' => $request['estatus_averia'],
+			'fecha_modificacion_averia' => date("Y/m/d"),
+		]);
+		
+		$averias = Averia::whereNull('fecha_baja_averia');
+		return redirect()->route('averia.index',compact('averias'))
+			->with('status','La averia se ha actualizado con éxito');
     }
 
     /**
@@ -86,11 +117,12 @@ class AveriaController extends Controller
      */
     public function destroy($id)
     {
-		Empresa::where('id_averia', $id)->update([
-			'fecha_baja_averia' => Carbon::now()->format('Y-m-d'),
+		Averia::where('id_averia', $id)->update([
+			'fecha_baja_averia' => date("Y/m/d"),
 		]);
 		
-		$averias = Averia::whereNull('fecha_baja_averia')->get();
-        return redirect()->route('averia.index', compact('averias'));
+        $averias = Averia::whereNull('fecha_baja_averia')->with('empresa')->get();
+        return redirect()->route('averia.index', compact('averias'))
+			->with('status','La averia se ha eliminado con éxito');
     }
 }

@@ -12,21 +12,24 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-/*
-Route::get('/inicio', function () {
-    return view('inicio');
-});
+
+URL::forceScheme('https');
+/*	
 Route::get('/test', function () {
 	return view('test');
 });
 */
-
-
-Route::resource("empresa", EmpresaController::class);
-Route::resource("averia", AveriaController::class);
-
-
-/*
 Auth::routes();
-Route::get('/home', 'HomeController@index')->name('home');
-*/
+	Route::get('/', function () {
+		return view('inicio');
+	});
+	Route::get('/offline', function () {
+		return view('vendor/laravelpwa/offline');
+	});
+	Route::resource("empresa", EmpresaController::class);
+	Route::resource("averia", AveriaController::class);
+		Route::get('/getAverias', 'ParteController@getAverias')->name('getAverias');
+	Route::resource("parte", ParteController::class);
+	Route::resource("usuario", UsuarioController::class);
+
+Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');

@@ -16,7 +16,8 @@ class Empresa extends Model
 		'direccion_empresa',
 		'codigo_postal_empresa',
 		'email_empresa',
-		'telefono_empresa'
+		'telefono_empresa',
+		'fecha_alta_empresa',
 	];
 	
 	public $timestamps = false;

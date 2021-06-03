@@ -11,10 +11,13 @@ class Averia extends Model
 	protected $foreignKey= 'id_empresa';
 	
 	protected $fillable =[
+		'id_empresa',
 		'descripcion_averia',
-		'estatus_averia'
+		'estatus_averia',
+		'fecha_alta_averia',
 	];
 	
+	public $timestamps = false;
 	
 	public function empresa()
     {

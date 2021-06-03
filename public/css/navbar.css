@@ -14,7 +14,7 @@
 	.logo a, .toggle a { font-size: 20px; } 
 	.button.secondary { border-bottom: 1px #444 solid; }
 
-	/* Mobile menu */ 
+/* Mobile menu */ 
 	.menu { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; } 
 	.toggle { order: 1; } 
 	.item.button { order: 2; } 

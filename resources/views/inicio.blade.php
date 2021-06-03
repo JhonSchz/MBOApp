@@ -62,18 +62,19 @@
                 margin-bottom: 30px;
             }
         </style>
+	  @laravelPWA
     </head>
     <body>
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
-                        <a href="{{ url('/home') }}">Home</a>
+                        <a href="{{ route('logout') }}">Log Out</a>
                     @else
-                        <a href="{{ route('login') }}">Login</a>
+                       <!-- <a href="{{ route('login') }}">Login</a> -->
 
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
+                           <!--  <a href="{{ route('register') }}">Register</a> -->
                         @endif
                     @endauth
                 </div>
@@ -88,10 +89,6 @@
 					<a href="https://github.com/JhonSchz/MBOApp">GitHub</a>
 					<a href="https://mboapp-mlrai.run-eu-central1.goorm.io/phpmyadmin/">Phpmyadmin</a>
 					<a href="{{ route('empresa.index') }}">Empresa</a>
-					<a href=""></a>
-					<a href=""></a>
-					<a href=""></a>
-					<a href=""></a>
 				<!--
                     <a href="https://laravel.com/docs">Docs</a>
                     <a href="https://github.com/laravel/laravel">GitHub</a>
@@ -105,5 +102,6 @@
                 </div>
             </div>
         </div>
+		
     </body>
 </html>

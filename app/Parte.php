@@ -8,14 +8,19 @@ class Parte extends Model
 {
     protected $table = 'parte';
 	protected $primaryKey = 'id_parte';
+	protected $foreignKey= ['id_usuario','id_averia'];
 	
 	protected $fillable =[
+		'id_usuario',
+		'id_averia',
 		'fecha_parte',
 		'hora_parte',
 		'horas_realizadas',
-		'observaciones'
+		'observaciones',
+		'fecha_alta_parte',
 	];
 	
+	public $timestamps = false;
 	
 	public function usuario()
     {
@@ -25,6 +30,5 @@ class Parte extends Model
     {
         return $this->belongsTo('App\Averia', 'id_averia');
     }
-	
 	
 }

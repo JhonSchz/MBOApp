@@ -3,11 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Empresa;
-use Carbon\Carbon;
 
 class EmpresaController extends Controller
 {
+	/**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+	
     /**
      * Display a listing of the resource.
      *
@@ -37,6 +47,12 @@ class EmpresaController extends Controller
      */
     public function store(Request $request)
     {
+		$validator = Validator::make($request->all(), [
+            'cif' => 'max:20|unique:empresa',
+			'email_empresa' => 'max:150|unique:empresa',
+			'telefono_empresa' => 'min:600000000|max:999999999'
+        ])->validate();
+		
         $request = request()->except('_token','_method');
 		Empresa::create([
             'cif' => $request['cif'],
@@ -45,16 +61,13 @@ class EmpresaController extends Controller
 			'direccion_empresa' => $request['direccion_empresa'],
             'codigo_postal_empresa' => $request['codigo_postal_empresa'],
 			'telefono_empresa' => $request['telefono_empresa'],
-			'email_empresa' => $request['email_empresa']
-		]);
-		Empresa::where('cif', $request['cif'])->update([
-			'fecha_alta_empresa' => Carbon::now()->format('Y-m-d')
+			'email_empresa' => $request['email_empresa'],
+			'fecha_alta_empresa' => date("Y/m/d"),
 		]);
 		
 		$empresas = Empresa::whereNull('fecha_baja_empresa')->get();
-        return redirect()->route('empresa.index', compact('empresas'));
-		
-		//->with('status','La empresa se ha creado con éxito');
+        return redirect()->route('empresa.index', compact('empresas'))
+			->with('status','La empresa se ha creado con éxito');
 	}
 
     /**
@@ -91,6 +104,10 @@ class EmpresaController extends Controller
     {
         $request = request()->except('_token','_method');
 
+		$validator = Validator::make($request->all(), [
+			'telefono_empresa' => 'min:600000000|max:999999999'
+        ])->validate();
+		
 		Empresa::where('id_empresa', $id)->update([
 			'nombre_empresa' => $request['nombre_empresa'],
 			'cif' => $request['cif'],
@@ -99,11 +116,12 @@ class EmpresaController extends Controller
 			'codigo_postal_empresa' => $request['codigo_postal_empresa'],
 			'email_empresa' => $request['email_empresa'],
 			'telefono_empresa' => $request['telefono_empresa'],
-			'fecha_modificacion_empresa' => Carbon::now()->format('Y-m-d'),
+			'fecha_modificacion_empresa' => date("Y/m/d"),
 		]);
 		
 		$empresas = Empresa::whereNull('fecha_baja_empresa');
-		return redirect()->route('empresa.index',compact('empresas'));
+		return redirect()->route('empresa.index',compact('empresas'))
+			->with('status','La empresa se ha actualizado con éxito');
     }
 
     /**
@@ -115,10 +133,11 @@ class EmpresaController extends Controller
     public function destroy($id)
     {
 		Empresa::where('id_empresa', $id)->update([
-			'fecha_baja_empresa' => Carbon::now()->format('Y-m-d'),
+			'fecha_baja_empresa' => date("Y/m/d"),
 		]);
 		
 		$empresas = Empresa::whereNull('fecha_baja_empresa')->get();
-        return redirect()->route('empresa.index', compact('empresas'));
+        return redirect()->route('empresa.index', compact('empresas'))
+			->with('status','La empresa se ha eliminado con éxito');
     }
 }
